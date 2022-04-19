@@ -15,6 +15,12 @@ table {
 h1 {
   margin: 10px;
   margin-bottom: 15px;
+  color:white;
+  text-shadow: 2px 2px 3px black;
+}
+
+.number {
+  color:rgba(232, 65, 14, 1);;
 }
 .scoreboard {
   font-size: 1.5em;
