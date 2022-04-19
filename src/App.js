@@ -121,7 +121,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Claude Grioux <span className='number'>#28</span></h1>
+      <h1>Claude Giroux <span className='number'>#28</span></h1>
       Latest Game {new Date(lastGame.periods[0].startTime).toLocaleDateString("en-US")}
       <div className='lastGame'>
         <table className='scoreboard'>
