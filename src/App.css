@@ -1,0 +1,95 @@
+.App {
+  height: 100vh;
+  width: 100vw;
+  background-color: #292929;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+table {
+  border-spacing: 0px;
+}
+
+h1 {
+  margin: 10px;
+  margin-bottom: 15px;
+}
+.scoreboard {
+  font-size: 1.5em;
+  font-weight: 600;
+  border: 1px solid black;
+  border-bottom: none;
+  
+}
+
+.scoreboard .teamName {
+  padding: 8px 20px 8px 8px;
+  width: 100%;
+}
+
+.scoreboard .score {
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.scoreboard td {
+  border: 1px solid black;
+}
+
+.lastGame {
+  background: linear-gradient(90deg, rgba(232, 65, 14, 0.5), rgba(200, 16, 47, 0.5));
+  margin-top: 5px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  text-shadow: 1px 1px 3px black;
+}
+
+.lastGameStats {
+  width: 100%;
+  font-size: 1.2em;
+  border: 1px solid black;
+  border-top: none;
+  
+}
+
+.lastGameStats th {
+  padding: 4px 8px;
+  font-weight: 400;
+  border: 1px solid black;
+}
+
+.lastGameStats td {
+  text-align: center;
+  font-weight: 500;
+  border: 1px solid black;
+  padding: 4px 8px;
+}
+
+.stat {
+  font-weight: 600;
+  font-size: 1.4em;
+  padding-right: 6px;
+}
+
+.label {
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.flaStats {
+  background: linear-gradient(90deg, rgba(232, 65, 14, 0.5), rgba(200, 16, 47, 0.5));
+  padding: 10px;
+  border: 2px solid black;
+  text-shadow: 1px 1px 3px black;
+}
+
+.header {
+  width: 100%;
+  text-align: center;
+  font-size: 1.2em;
+}
