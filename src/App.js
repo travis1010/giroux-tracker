@@ -6,6 +6,11 @@ import { useEffect, useState } from 'react';
 
 function App() {
 
+  const [nextGame, setNextGame] = useState({
+    home: '',
+    away: ''
+  })
+
   const [flaStats, setFlaStats] = useState({
     gp: 0,
     goals: 0,
@@ -47,7 +52,8 @@ function App() {
     fetch('https://statsapi.web.nhl.com/api/v1/people/8473512/stats?stats=gameLog&season=20212022').then((res) => {
       return res.json();
     }).then((data) => {
-      const flaGames = data.stats[0].splits.filter((game) => game.team.id == 13)
+      const flaGames = data.stats[0].splits.filter((game) => game.team.id == 13);
+      console.log(flaGames);
       setFlaStats(getStatsFromGames(flaGames));
       const lastGamesStats = flaGames[0];
       
@@ -58,6 +64,20 @@ function App() {
       })
     
       setLastGameStats(getLastGameInfo(lastGamesStats))
+    })
+    fetch('https://statsapi.web.nhl.com/api/v1/teams/13?expand=team.schedule.next').then((res) => {
+      return res.json();
+    }).then((data) => {
+      const nextGameInfo = {};
+      nextGameInfo.home = data.teams[0].nextGameSchedule.dates[0].games[0].teams.home.team.name;
+      nextGameInfo.away = data.teams[0].nextGameSchedule.dates[0].games[0].teams.away.team.name;
+      const dateTime = new Date(data.teams[0].nextGameSchedule.dates[0].games[0].gameDate);
+      nextGameInfo.date = dateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const time = dateTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      nextGameInfo.time = time;
+      console.log(nextGameInfo)
+      console.log(data);
+      setNextGame(nextGameInfo);
     })
   }
 
@@ -111,9 +131,7 @@ function App() {
     return {gp, goals, assists, avgFaceOffPct, plusMinus, avgTimeOnIce, points, pointsPerGame}
   }
 
-  useEffect(() => {
-    console.log(lastGame);
-  }, [lastGame])
+
 
   useEffect(() => {
     getData();
@@ -191,6 +209,15 @@ function App() {
           <span className='label'>AVERAGE TIME ON ICE</span>
         </div>
         
+      </div>
+      Next Game
+      <div className='nextGame'>
+        <div>
+          <div>{nextGame.away}</div><div>{nextGame.home}</div>
+        </div>
+        <div className='dateTime'>
+          <div>{nextGame.date}</div><div>{nextGame.time} ET</div>
+        </div>
       </div>
     </div>
   );
