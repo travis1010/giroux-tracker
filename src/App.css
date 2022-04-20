@@ -1,5 +1,6 @@
 .App {
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   width: 100vw;
   background-color: #292929;
   color: white;
@@ -103,6 +104,7 @@ h1 {
   text-shadow: 1px 1px 3px black;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 15px;
 }
 
 .nextGame .dateTime {
