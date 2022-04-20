@@ -173,7 +173,7 @@ function App() {
           </tbody>
         </table>
       </div>
-      <div className='header'>As a Florida Panther...</div>
+      <div>As a Florida Panther...</div>
       <div className='flaStats'>
         
         <div>
