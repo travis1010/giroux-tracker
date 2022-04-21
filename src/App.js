@@ -1,6 +1,7 @@
 
 import './App.css';
 import { useEffect, useState } from 'react';
+import GoogleAd from './GoogleAd';
 
 // girouxs id /api/v1/people/8473512
 
@@ -53,7 +54,6 @@ function App() {
       return res.json();
     }).then((data) => {
       const flaGames = data.stats[0].splits.filter((game) => game.team.id == 13);
-      console.log(flaGames);
       setFlaStats(getStatsFromGames(flaGames));
       const lastGamesStats = flaGames[0];
       
@@ -75,8 +75,6 @@ function App() {
       nextGameInfo.date = dateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
       const time = dateTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
       nextGameInfo.time = time;
-      console.log(nextGameInfo)
-      console.log(data);
       setNextGame(nextGameInfo);
     })
   }
@@ -219,6 +217,7 @@ function App() {
           <div>{nextGame.date}</div><div>{nextGame.time} ET</div>
         </div>
       </div>
+      <GoogleAd />
     </div>
   );
 }
