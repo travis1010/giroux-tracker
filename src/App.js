@@ -1,7 +1,7 @@
 
 import './App.css';
 import { useEffect, useState } from 'react';
-import GoogleAd from './GoogleAd';
+
 
 // girouxs id /api/v1/people/8473512
 
@@ -217,7 +217,7 @@ function App() {
           <div>{nextGame.date}</div><div>{nextGame.time} ET</div>
         </div>
       </div>
-      <GoogleAd />
+      
     </div>
   );
 }
