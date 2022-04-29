@@ -15,6 +15,7 @@ function App() {
   const [flaStats, setFlaStats] = useState({
     wins: 0,
     losses: 0,
+    OTs: 0,
     gp: 0,
     goals: 0,
     assists: 0,
@@ -92,8 +93,10 @@ function App() {
   }
 
   function getStatsFromGames(gamesArr) {
+    console.log(gamesArr)
     let wins = 0;
     let losses = 0;
+    let OTs = 0;
     let gp = gamesArr.length;
     let goals = 0;
     let assists = 0;
@@ -104,7 +107,11 @@ function App() {
     gamesArr.forEach((game) => {
       if(game.isWin) {
         wins++;
-      } else {
+      } else if(game.isOT) 
+      {
+        OTs++;
+      }
+      else {
         losses++;
       }
       goals += game.stat.goals;
@@ -135,7 +142,7 @@ function App() {
     const pointsPerGame = Math.round(((points / gp )+ Number.EPSILON) * 100) / 100;
 
     
-    return {gp, goals, assists, avgFaceOffPct, plusMinus, avgTimeOnIce, points, pointsPerGame, wins, losses}
+    return {gp, goals, assists, avgFaceOffPct, plusMinus, avgTimeOnIce, points, pointsPerGame, wins, losses, OTs}
   }
 
 
@@ -216,7 +223,7 @@ function App() {
           <span className='label'>AVERAGE TIME ON ICE</span>
         </div>
         <div>
-          <span className='stat'>{flaStats.wins} - {flaStats.losses}</span>
+          <span className='stat'>{flaStats.wins}-{flaStats.losses}-{flaStats.OTs}</span>
           <span className='label'>TEAM RECORD</span>
         </div>
         
