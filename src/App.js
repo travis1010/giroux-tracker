@@ -13,6 +13,8 @@ function App() {
   })
 
   const [flaStats, setFlaStats] = useState({
+    wins: 0,
+    losses: 0,
     gp: 0,
     goals: 0,
     assists: 0,
@@ -49,7 +51,7 @@ function App() {
     }
   })
 
-  async function getData() {
+  function getData() {
     fetch('https://statsapi.web.nhl.com/api/v1/people/8473512/stats?stats=gameLog&season=20212022').then((res) => {
       return res.json();
     }).then((data) => {
@@ -90,6 +92,8 @@ function App() {
   }
 
   function getStatsFromGames(gamesArr) {
+    let wins = 0;
+    let losses = 0;
     let gp = gamesArr.length;
     let goals = 0;
     let assists = 0;
@@ -98,6 +102,11 @@ function App() {
     let plusMinus = 0;
 
     gamesArr.forEach((game) => {
+      if(game.isWin) {
+        wins++;
+      } else {
+        losses++;
+      }
       goals += game.stat.goals;
       assists += game.stat.assists;
       totFaceOffPct += game.stat.faceOffPct;
@@ -126,7 +135,7 @@ function App() {
     const pointsPerGame = Math.round(((points / gp )+ Number.EPSILON) * 100) / 100;
 
     
-    return {gp, goals, assists, avgFaceOffPct, plusMinus, avgTimeOnIce, points, pointsPerGame}
+    return {gp, goals, assists, avgFaceOffPct, plusMinus, avgTimeOnIce, points, pointsPerGame, wins, losses}
   }
 
 
@@ -205,6 +214,10 @@ function App() {
         <div>
           <span className='stat'>{flaStats.avgTimeOnIce}</span>
           <span className='label'>AVERAGE TIME ON ICE</span>
+        </div>
+        <div>
+          <span className='stat'>{flaStats.wins} - {flaStats.losses}</span>
+          <span className='label'>TEAM RECORD</span>
         </div>
         
       </div>
