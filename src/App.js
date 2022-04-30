@@ -230,15 +230,12 @@ function App() {
       </div>
       Next Game
       <div className='nextGame'>
-      Playoffs Coming Soon!
-      {/*
         <div>
           <div>{nextGame.away}</div><div>{nextGame.home}</div>
         </div>
         <div className='dateTime'>
           <div>{nextGame.date}</div><div>{nextGame.time} ET</div>
         </div>
-      */}
       </div>
       
     </div>
