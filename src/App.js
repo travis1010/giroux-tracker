@@ -52,6 +52,16 @@ function App() {
     }
   })
 
+  const [playoffStats, setPlayoffStats] = useState({
+    gp: 0,
+    goals: 0,
+    assists: 0,
+    points: 0,
+    faceOffPct: 0,
+    avgTimeOnIce: 0,
+    plusMinus: 0
+  })
+
   function getData() {
     fetch('https://statsapi.web.nhl.com/api/v1/people/8473512/stats?stats=gameLog&season=20212022').then((res) => {
       return res.json();
@@ -59,7 +69,7 @@ function App() {
       const flaGames = data.stats[0].splits.filter((game) => game.team.id == 13);
       setFlaStats(getStatsFromGames(flaGames));
       const lastGamesStats = flaGames[0];
-      
+      /* ------------disabling this for playoffs----------------
       fetch(`https://statsapi.web.nhl.com/api/v1/game/${lastGamesStats.game.gamePk}/linescore`).then((res) => {
         return res.json();
       }).then ((data) => {
@@ -67,6 +77,7 @@ function App() {
       })
     
       setLastGameStats(getLastGameInfo(lastGamesStats))
+      */
     })
     fetch('https://statsapi.web.nhl.com/api/v1/teams/13?expand=team.schedule.next').then((res) => {
       return res.json();
@@ -79,6 +90,39 @@ function App() {
       const time = dateTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
       nextGameInfo.time = time;
       setNextGame(nextGameInfo);
+    })
+
+    //playoffs here
+    fetch('https://statsapi.web.nhl.com/api/v1/people/8473512/stats?stats=statsSingleSeasonPlayoffs&season=20212022').then((res) => {
+      return res.json();
+    }).then((data) => {
+      console.log(data);
+      console.log(data.stats[0].splits[0].stat.faceOffPct);
+      setPlayoffStats({
+        gp: data.stats[0].splits[0].stat.games,
+        goals: data.stats[0].splits[0].stat.goals,
+        assists: data.stats[0].splits[0].stat.assists,
+        points: data.stats[0].splits[0].stat.points,
+        faceOffPct: data.stats[0].splits[0].stat.faceOffPct,
+        avgTimeOnIce: data.stats[0].splits[0].stat.timeOnIcePerGame,
+        plusMinus: data.stats[0].splits[0].stat.plusMinus,
+        pointsPerGame: Math.round(((data.stats[0].splits[0].stat.points / data.stats[0].splits[0].stat.games )+ Number.EPSILON) * 100) / 100
+      })
+    })
+    //most recent playoff game
+    fetch('https://statsapi.web.nhl.com/api/v1/people/8473512/stats?stats=playoffGameLog&season=20212022').then((res) => {
+      return res.json();
+    }).then((data) => {
+      console.log({data})
+      const lastGamesStats = data.stats[0].splits[0];
+      
+      fetch(`https://statsapi.web.nhl.com/api/v1/game/${lastGamesStats.game.gamePk}/linescore`).then((res) => {
+        return res.json();
+      }).then ((data) => {
+        setLastGame(data)
+      })
+    
+      setLastGameStats(getLastGameInfo(lastGamesStats))
     })
   }
 
@@ -187,7 +231,49 @@ function App() {
           </tbody>
         </table>
       </div>
-      <div>As a Florida Panther...</div>
+
+
+      <div>In The Playoffs...</div>
+      <div className='flaStats'>
+        
+        <div>
+          <span className='stat'>{playoffStats.gp}</span>
+          <span className='label'>GAMES PLAYED</span>
+        </div>
+        <div>
+          <span className='stat'>{playoffStats.goals}</span>
+          <span className='label'>GOALS</span>
+        </div>
+        <div>
+          <span className='stat'>{playoffStats.assists}</span>
+          <span className='label'>ASSISTS</span>
+        </div>
+        <div>
+          <span className='stat'>{playoffStats.points}</span>
+          <span className='label'>POINTS</span>
+        </div>
+        <div>
+          <span className='stat'>{playoffStats.pointsPerGame}</span>
+          <span className='label'>POINTS PER GAME</span>
+        </div>
+        <div>
+          <span className='stat'>{playoffStats.plusMinus > 0 ? `+${playoffStats.plusMinus}` : playoffStats.plusMinus}</span>
+          <span className='label'>PLUS/MINUS</span>
+        </div>
+        <div>
+          <span className='stat'>{playoffStats.faceOffPct}%</span>
+          <span className='label'>FACE OFF WINS</span>
+        </div>
+        <div>
+          <span className='stat'>{playoffStats.avgTimeOnIce}</span>
+          <span className='label'>AVERAGE TIME ON ICE</span>
+        </div>
+        
+        
+      </div>
+
+
+      <div>In The Regular Season...</div>
       <div className='flaStats'>
         
         <div>
