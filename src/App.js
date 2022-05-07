@@ -62,6 +62,20 @@ function App() {
     plusMinus: 0
   })
 
+  const [currentStats, setCurrentStats] = useState({
+    type: "playoffs",
+    wins: 0,
+    losses: 0,
+    OTs: 0,
+    gp: 0,
+    goals: 0,
+    assists: 0,
+    points: 0,
+    faceOffPct: 0,
+    avgTimeOnIce: 0,
+    plusMinus: 0
+  })
+
   function getData() {
     fetch('https://statsapi.web.nhl.com/api/v1/people/8473512/stats?stats=gameLog&season=20212022').then((res) => {
       return res.json();
@@ -82,12 +96,14 @@ function App() {
     fetch('https://statsapi.web.nhl.com/api/v1/teams/13?expand=team.schedule.next').then((res) => {
       return res.json();
     }).then((data) => {
+      
       const nextGameInfo = {};
       nextGameInfo.home = data.teams[0].nextGameSchedule.dates[0].games[0].teams.home.team.name;
       nextGameInfo.away = data.teams[0].nextGameSchedule.dates[0].games[0].teams.away.team.name;
       const dateTime = new Date(data.teams[0].nextGameSchedule.dates[0].games[0].gameDate);
       nextGameInfo.date = dateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-      const time = dateTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      const time = dateTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: "America/New_York"});
+      console.log(time);
       nextGameInfo.time = time;
       setNextGame(nextGameInfo);
     })
@@ -97,8 +113,20 @@ function App() {
       return res.json();
     }).then((data) => {
       console.log(data);
-      console.log(data.stats[0].splits[0].stat.faceOffPct);
+    
       setPlayoffStats({
+        type: "playoffs",
+        gp: data.stats[0].splits[0].stat.games,
+        goals: data.stats[0].splits[0].stat.goals,
+        assists: data.stats[0].splits[0].stat.assists,
+        points: data.stats[0].splits[0].stat.points,
+        faceOffPct: data.stats[0].splits[0].stat.faceOffPct,
+        avgTimeOnIce: data.stats[0].splits[0].stat.timeOnIcePerGame,
+        plusMinus: data.stats[0].splits[0].stat.plusMinus,
+        pointsPerGame: Math.round(((data.stats[0].splits[0].stat.points / data.stats[0].splits[0].stat.games )+ Number.EPSILON) * 100) / 100
+      })
+      setCurrentStats({
+        type: "playoffs",
         gp: data.stats[0].splits[0].stat.games,
         goals: data.stats[0].splits[0].stat.goals,
         assists: data.stats[0].splits[0].stat.assists,
@@ -166,7 +194,7 @@ function App() {
       totTimeOnIceSeconds += (timeOnIce[0] * 60 + timeOnIce[1]);
     })
    
-    const avgFaceOffPct = Math.round(((totFaceOffPct / gp)+ Number.EPSILON) * 100) / 100;
+    const faceOffPct = Math.round(((totFaceOffPct / gp)+ Number.EPSILON) * 100) / 100;
 
     const avgTimeOnIceSeconds = totTimeOnIceSeconds / gp;
     let seconds = Math.round(avgTimeOnIceSeconds % 60).toString();
@@ -186,9 +214,12 @@ function App() {
     const pointsPerGame = Math.round(((points / gp )+ Number.EPSILON) * 100) / 100;
 
     
-    return {gp, goals, assists, avgFaceOffPct, plusMinus, avgTimeOnIce, points, pointsPerGame, wins, losses, OTs}
+    return {type: 'season', gp, goals, assists, faceOffPct, plusMinus, avgTimeOnIce, points, pointsPerGame, wins, losses, OTs}
   }
 
+  function getBtnClass(type) {
+    return currentStats.type == type ? ' selectedBtn' : '';
+  }
 
 
   useEffect(() => {
@@ -232,87 +263,49 @@ function App() {
         </table>
       </div>
 
-
-      <div>In The Playoffs...</div>
-      <div className='flaStats'>
+      
+      <div className='statsContainer'>
+        <div className='tabBtns'>
+          <button className={'playoffBtn' + getBtnClass('playoffs')} onClick={()=> setCurrentStats(playoffStats)}>Playoffs</button>
+          <button className={'seasonBtn' + getBtnClass('season')} onClick={()=> setCurrentStats(flaStats)}>Season</button>
+        </div>
+        <div className='flaStats'>
         
-        <div>
-          <span className='stat'>{playoffStats.gp}</span>
-          <span className='label'>GAMES PLAYED</span>
-        </div>
-        <div>
-          <span className='stat'>{playoffStats.goals}</span>
-          <span className='label'>GOALS</span>
-        </div>
-        <div>
-          <span className='stat'>{playoffStats.assists}</span>
-          <span className='label'>ASSISTS</span>
-        </div>
-        <div>
-          <span className='stat'>{playoffStats.points}</span>
-          <span className='label'>POINTS</span>
-        </div>
-        <div>
-          <span className='stat'>{playoffStats.pointsPerGame}</span>
-          <span className='label'>POINTS PER GAME</span>
-        </div>
-        <div>
-          <span className='stat'>{playoffStats.plusMinus > 0 ? `+${playoffStats.plusMinus}` : playoffStats.plusMinus}</span>
-          <span className='label'>PLUS/MINUS</span>
-        </div>
-        <div>
-          <span className='stat'>{playoffStats.faceOffPct}%</span>
-          <span className='label'>FACE OFF WINS</span>
-        </div>
-        <div>
-          <span className='stat'>{playoffStats.avgTimeOnIce}</span>
-          <span className='label'>AVERAGE TIME ON ICE</span>
-        </div>
+          <div>
+            <span className='stat'>{currentStats.gp}</span>
+            <span className='label'>GAMES PLAYED</span>
+          </div>
+          <div>
+            <span className='stat'>{currentStats.goals}</span>
+            <span className='label'>GOALS</span>
+          </div>
+          <div>
+            <span className='stat'>{currentStats.assists}</span>
+            <span className='label'>ASSISTS</span>
+          </div>
+          <div>
+            <span className='stat'>{currentStats.points}</span>
+            <span className='label'>POINTS</span>
+          </div>
+          <div>
+            <span className='stat'>{currentStats.pointsPerGame}</span>
+            <span className='label'>POINTS PER GAME</span>
+          </div>
+          <div>
+            <span className='stat'>{currentStats.plusMinus > 0 ? `+${currentStats.plusMinus}` : currentStats.plusMinus}</span>
+            <span className='label'>PLUS/MINUS</span>
+          </div>
+          <div>
+            <span className='stat'>{currentStats.faceOffPct}%</span>
+            <span className='label'>FACE OFF WINS</span>
+          </div>
+          <div>
+            <span className='stat'>{currentStats.avgTimeOnIce}</span>
+            <span className='label'>AVERAGE TIME ON ICE</span>
+          </div>
         
         
-      </div>
-
-
-      <div>In The Regular Season...</div>
-      <div className='flaStats'>
-        
-        <div>
-          <span className='stat'>{flaStats.gp}</span>
-          <span className='label'>GAMES PLAYED</span>
         </div>
-        <div>
-          <span className='stat'>{flaStats.goals}</span>
-          <span className='label'>GOALS</span>
-        </div>
-        <div>
-          <span className='stat'>{flaStats.assists}</span>
-          <span className='label'>ASSISTS</span>
-        </div>
-        <div>
-          <span className='stat'>{flaStats.points}</span>
-          <span className='label'>POINTS</span>
-        </div>
-        <div>
-          <span className='stat'>{flaStats.pointsPerGame}</span>
-          <span className='label'>POINTS PER GAME</span>
-        </div>
-        <div>
-          <span className='stat'>{flaStats.plusMinus > 0 ? `+${flaStats.plusMinus}` : flaStats.plusMinus}</span>
-          <span className='label'>PLUS/MINUS</span>
-        </div>
-        <div>
-          <span className='stat'>{flaStats.avgFaceOffPct}%</span>
-          <span className='label'>FACE OFF WINS</span>
-        </div>
-        <div>
-          <span className='stat'>{flaStats.avgTimeOnIce}</span>
-          <span className='label'>AVERAGE TIME ON ICE</span>
-        </div>
-        <div>
-          <span className='stat'>{flaStats.wins}-{flaStats.losses}-{flaStats.OTs}</span>
-          <span className='label'>TEAM RECORD</span>
-        </div>
-        
       </div>
       Next Game
       <div className='nextGame'>

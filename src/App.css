@@ -89,11 +89,10 @@ h1 {
 }
 
 .flaStats {
-  background: linear-gradient(90deg, rgba(232, 65, 14, 0.5), rgba(200, 16, 47, 0.5));
   padding: 10px;
   border: 2px solid black;
   text-shadow: 1px 1px 3px black;
-  margin-bottom: 15px;
+  border-top: none;
 }
 
 
@@ -110,4 +109,42 @@ h1 {
 .nextGame .dateTime {
   text-align: right;
   margin-left: 25px;
+}
+
+.tabBtns {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.tabBtns button {
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid black;
+  width: 50%;
+  box-sizing: border-box;
+  flex-grow: 1;
+  color: white;
+  text-shadow: 1px 1px 3px black;
+  padding: 5px;
+  font-size: 1em;
+}
+
+.statsContainer {
+  background: linear-gradient(90deg, rgba(232, 65, 14, 0.5), rgba(200, 16, 47, 0.5));
+  margin-bottom: 15px;
+}
+
+.tabBtns .playoffBtn {
+  border-right: 1px solid black;
+}
+
+.tabBtns .seasonBtn {
+  border-left: 1px solid black;
+}
+
+
+.tabBtns .selectedBtn {
+  border-bottom: none;
+  font-weight: 700;
+  background: none;
 }
